@@ -3,6 +3,7 @@ name = "unimog"
 version = "0.1.0"
 description = "Elegant service objects for Python."
 authors = ["Hannes Moser <box@hannesmoser.at>"]
+repository  = "https://github.com/eliias/unimog"
 license = "MIT"
 readme = "README.md"
 keywords = ["service object", "organize", "action", "business logic"]
