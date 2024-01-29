@@ -2,13 +2,20 @@
 
 > Elegant service objects for Python.
 
-Composable business logic and uniform error handling for business logic actions.
-A single action does one thing, and multiple actions can be organized in groups.
-Groups and Actions can be arbitrarily nested and form complex DAGs (directed
-acyclic graph).
+A robust and flexible framework that facilitates composable business logic and
+ensures uniform error handling for various business logic actions. The
+fundamental concept revolves around the idea that a single action should
+perform a specific task, and these actions can be seamlessly organized into
+groups. Notably, these groups and actions can be intricately nested, forming
+complex Directed Acyclic Graphs (DAGs).
 
-Service objects are useful to represent complex business logic in an easy to
-digest form.
+To enhance readability and maintainability, we leverage the concept of service
+objects to encapsulate intricate business logic in an easily understandable
+format. Establishing a normalized interface for all service calls not only
+streamlines the overall architecture but also enables the chaining of service
+calls. This consistent approach to handling errors across the entire framework
+ensures a standardized and predictable error-handling mechanism, contributing
+to the reliability of the system.
 
 ## Usage
 
