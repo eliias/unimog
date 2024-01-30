@@ -1,5 +1,4 @@
-from typing import Optional, Any
-
+from dataclasses import dataclass
 
 from unimog import Action, Context
 
@@ -7,7 +6,7 @@ from unimog import Action, Context
 class TestAction:
     def test_failure(self):
         class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
+            def perform(self):
                 raise Exception("this should fail")
             
         action = MyAction()
@@ -17,8 +16,8 @@ class TestAction:
 
     def test_success(self):
         class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
+            def perform(self):
+                pass
 
         action = MyAction()
         result = action()
@@ -27,8 +26,8 @@ class TestAction:
         
     def test_empty_kwargs(self):
         class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
+            def perform(self):
+                pass
 
         action = MyAction()
         result = action()
@@ -36,55 +35,40 @@ class TestAction:
         assert result.is_success()
         
     def test_kwargs(self):
-        class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
+        @dataclass
+        class Input(Context):
+            hello: str
 
-        action = MyAction()
+        @dataclass
+        class Output(Context):
+            hello: str
+
+        class MyAction(Action):
+            def perform(self):
+                pass
+
+        action = MyAction(Input, Output)
         result = action(hello="world")
 
         assert result.hello == "world"
         
     def test_many_kwargs(self):
-        class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
+        @dataclass
+        class Input(Context):
+            hello: str
+            foo: str
 
-        action = MyAction()
+        @dataclass
+        class Output(Context):
+            hello: str
+            foo: str
+
+        class MyAction(Action):
+            def perform(self):
+                pass
+
+        action = MyAction(Input, Output)
         result = action(hello="world", foo="bar")
 
         assert result.hello == "world"
-        assert result.foo == "bar"
-        
-    def test_empty_context_argument(self):
-        class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
-
-        action = MyAction()
-        context = Context()
-        result = action(context)
-
-        assert result.is_success()
-        
-    def test_context_argument(self):
-        class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {}
-
-        action = MyAction()
-        context = Context(hello="world")
-        result = action(context)
-
-        assert result.hello == "world"
-            
-    def test_context_is_enriched(self):
-        class MyAction(Action):
-            def perform(self) -> Optional[dict[str, Any]]:
-                return {"foo": "bar"}
-
-        action = MyAction()
-        result = action()
-        
-        assert result.is_success()
         assert result.foo == "bar"

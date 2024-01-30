@@ -27,16 +27,27 @@ pip install unimog
 
 ```python
 import gzip
+from dataclasses import dataclass
 
-from unimog import Action
+from unimog import Action, Context
+
+
+@dataclass
+class Input(Context):
+    text: str
+
+
+@dataclass
+class Output(Input):
+    compressed_text: str
 
 
 class CompressText(Action):
     def perform(self):
-        compressed_text = gzip.compress(self.context.input)
-        return {"compressed_text": compressed_text}
+        compressed_text = gzip.compress(self.input.text)
+        self.output.compressed_text = compressed_text
 
-result = CompressText()(input="Hello, World!")
+result = CompressText(Input, Output)(text="Hello, World!")
 result.is_success() # True
 result.compressed_text # b'\x1f\x8b\x08\x00r\x92\xb7e…
 ```
@@ -45,24 +56,35 @@ result.compressed_text # b'\x1f\x8b\x08\x00r\x92\xb7e…
 
 ```python
 import gzip
+from dataclasses import dataclass
 
-from unimog import Action, Organizer
+from unimog import Action, Context, Organizer
 
 
+@dataclass
+class MyContext(Context):
+    text: str = None
+    compressed_text: str = None
+
+    
 class CompressText(Action):
     def perform(self):
-        compressed_text = gzip.compress(self.context.input)
-        return {"compressed_text": compressed_text}
+        compressed_text = gzip.compress(self.input.text)
+        self.output.compressed_text = compressed_text
 
     
 class DecompressText(Action):
     def perform(self):
-        text = gzip.decompress(self.context.data)
-        return {"text": text}
+        text = gzip.decompress(self.input.compressed_text)
+        self.output.text = text
 
-CompressAndDecompressText = Organizer(CompressText, DecompressText)
 
-result = CompressAndDecompressText(input="Hello, World!")
+CompressAndDecompressText = Organizer(
+    CompressText(MyContext, MyContext),
+    DecompressText(MyContext, MyContext)
+)
+
+result = CompressAndDecompressText(text="Hello, World!")
 result.is_success() # True
 result.text # "Hello, World!"
 ```
@@ -73,4 +95,13 @@ result.text # "Hello, World!"
 
 ```bash
 python -m pytest
+```
+
+### Release
+
+Bump version number accordingly (semantic versioning).
+
+```bash
+poetry build
+poetry publish
 ```

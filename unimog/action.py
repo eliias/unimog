@@ -1,27 +1,32 @@
 from abc import abstractmethod
 
-from typing import Any, Optional
+from typing import Generic, NoReturn, TypeVar, Type
 from unimog.context import Context
 
+In = TypeVar("In", bound=Context)
+Out = TypeVar("Out", bound=Context)
 
-class Action:
-    def __init__(self):
-        self.context = Context()
 
-    def __call__(self, context: Context = None, **kwargs) -> Context:
-        if context:
-            self.context = context
-        else:
-            self.context = Context(**kwargs)
+class Action(Generic[In, Out]):
+    def __init__(self,
+                 input_type: Type[In] = Context,
+                 output_type: Type[Out] = Context):
+        self.input = None
+        self.input_type = input_type
+
+        self.output = None
+        self.output_type = output_type
+
+    def __call__(self, **kwargs) -> Out:
+        self.input = self.input_type(**kwargs)
+        self.output = self.output_type(**kwargs)
 
         try:
-            additional_data = self.perform()
-            if not additional_data:
-                additional_data = {}
-            return self.context.success(**additional_data)
+            self.perform()
+            return self.output.success()
         except Exception as e:
-            return self.context.failure(str(e))
+            return self.output.failure(str(e))
 
     @abstractmethod
-    def perform(self) -> Optional[dict[str, Any]]:
+    def perform(self) -> NoReturn:
         pass

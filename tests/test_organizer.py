@@ -1,4 +1,6 @@
-from unimog import Action, Organizer
+from dataclasses import dataclass
+
+from unimog import Action, Organizer, Context
 
 
 class TestOrganizer:
@@ -9,23 +11,42 @@ class TestOrganizer:
             
         class MyAction2(Action):
             def perform(self):
-                return {"step2": True}
+                pass
 
-        organizer = Organizer(MyAction1, MyAction2)
+        organizer = Organizer(MyAction1(), MyAction2())
         result = organizer()
 
         assert result.is_failure()
 
     def test_success(self):
+        @dataclass
+        class Step1Input(Context):
+            pass
+
+        @dataclass
+        class Step1Output(Context):
+            step1: bool = None
+
+        @dataclass
+        class Step2Input(Context):
+            step1: bool
+
+        @dataclass
+        class Step2Output(Context):
+            step1: bool = None
+            step2: bool = None
+
         class MyAction1(Action):
             def perform(self):
-                return {"step1": True}
+                self.output.step1 = True
 
         class MyAction2(Action):
             def perform(self):
-                return {"step2": True}
+                self.output.step2 = True
 
-        organizer = Organizer(MyAction1, MyAction2)
+        organizer = Organizer(
+            MyAction1(Step1Input, Step1Output),
+            MyAction2(Step2Input, Step2Output))
         result = organizer()
 
         assert result.is_success()

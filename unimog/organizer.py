@@ -1,17 +1,27 @@
+from dataclasses import asdict
+from typing import TypeVar, Type
+
+from unimog import Context
 from unimog.action import Action
 
+In = TypeVar("In", bound=Context)
+Out = TypeVar("Out", bound=Context)
 
-class Organizer(Action):
-    def __init__(self, *actions: type[Action]):
-        super().__init__()
 
+class Organizer(Action[In, Out]):
+    def __init__(self, *actions: Action[In, Out]):
+        super().__init__(
+            input_type=actions[0].input_type,
+            output_type=actions[len(actions) - 1].output_type)
         self.actions = actions
 
-    def perform(self) -> None:
-        for action_class in self.actions:
-            if self.context.is_failure():
-                raise Exception(self.context.error)
+    def perform(self):
+        context = self.input
 
-            action = action_class()
-            result = action(context=self.context)
-            self.context = result
+        for action in self.actions:
+            if context.is_failure():
+                raise Exception(context.error)
+
+            context = action(**asdict(context))
+
+        self.output = context

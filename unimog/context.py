@@ -1,28 +1,24 @@
-from typing import Optional
+from dataclasses import dataclass
+from typing import Optional, Self
 
 
-class Context(dict):
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+@dataclass(kw_only=True)
+class Context:
+    def __init__(self):
+        self._error = None
+        self._is_success = None
 
-    def __init__(self, **kwargs):
-        super().__init__()
-
+    def __post_init__(self):
         self._is_success: bool = True
         self._error: Optional[str] = None
 
-        for field, value in kwargs.items():
-            self[field] = value
-
-    def failure(self, error_message: str) -> 'Context':
+    def failure(self, error_message: str) -> Self:
         self._error = error_message
         self._is_success = False
 
         return self
 
-    def success(self, **kwargs) -> 'Context':
-        self.update(kwargs)
+    def success(self) -> Self:
         self._is_success = True
 
         return self
