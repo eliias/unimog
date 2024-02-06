@@ -23,7 +23,7 @@ class Action(Generic[In, Out]):
 
         try:
             self.perform()
-            return self.output.success()
+            return self.output.success()  # noqa
         except Exception as e:
             return self.output.failure(str(e))
 

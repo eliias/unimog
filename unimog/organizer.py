@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import TypeVar, Type
+from typing import TypeVar
 
 from unimog import Context
 from unimog.action import Action
