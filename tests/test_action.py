@@ -12,7 +12,7 @@ class TestAction:
         action = MyAction()
         result = action()
         
-        assert result.is_failure()
+        assert result.is_failure
 
     def test_success(self):
         class MyAction(Action):
@@ -22,7 +22,7 @@ class TestAction:
         action = MyAction()
         result = action()
 
-        assert result.is_success()
+        assert result.is_success
         
     def test_empty_kwargs(self):
         class MyAction(Action):
@@ -32,7 +32,7 @@ class TestAction:
         action = MyAction()
         result = action()
 
-        assert result.is_success()
+        assert result.is_success
         
     def test_kwargs(self):
         @dataclass

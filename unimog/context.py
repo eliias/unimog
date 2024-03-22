@@ -23,9 +23,11 @@ class Context:
 
         return self
 
+    @property
     def is_failure(self) -> bool:
         return not self._is_success
 
+    @property
     def is_success(self) -> bool:
         return self._is_success
 

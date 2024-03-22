@@ -48,7 +48,7 @@ class CompressText(Action):
         self.output.compressed_text = compressed_text
 
 result = CompressText(Input, Output)(text="Hello, World!")
-result.is_success() # True
+result.is_success # True
 result.compressed_text # b'\x1f\x8b\x08\x00r\x92\xb7e…
 ```
 
@@ -85,7 +85,7 @@ CompressAndDecompressText = Organizer(
 )
 
 result = CompressAndDecompressText(text="Hello, World!")
-result.is_success() # True
+result.is_success # True
 result.text # "Hello, World!"
 ```
 

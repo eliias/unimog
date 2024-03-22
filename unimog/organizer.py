@@ -19,7 +19,7 @@ class Organizer(Action[In, Out]):
         context = self.input
 
         for action in self.actions:
-            if context.is_failure():
+            if context.is_failure:
                 raise Exception(context.error)
 
             context = action(**asdict(context))

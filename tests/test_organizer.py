@@ -16,7 +16,7 @@ class TestOrganizer:
         organizer = Organizer(MyAction1(), MyAction2())
         result = organizer()
 
-        assert result.is_failure()
+        assert result.is_failure
 
     def test_success(self):
         @dataclass
@@ -46,7 +46,8 @@ class TestOrganizer:
 
         organizer = Organizer(
             MyAction1(Step1Input, Step1Output),
-            MyAction2(Step2Input, Step2Output))
+            MyAction2(Step2Input, Step2Output)
+        )
         result = organizer()
 
-        assert result.is_success()
+        assert result.is_success
